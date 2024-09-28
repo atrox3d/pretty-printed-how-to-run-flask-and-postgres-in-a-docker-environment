@@ -12,7 +12,7 @@ def index():
         db.session.commit()
         
         return redirect(url_for("main.index"))
+    elif request.method == "GET":
+        todos = Todo.query.all()
 
-    todos = Todo.query.all()
-
-    return render_template("index.html", todos=todos)
+        return render_template("index.html", todos=todos)
