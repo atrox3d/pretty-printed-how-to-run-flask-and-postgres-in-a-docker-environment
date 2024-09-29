@@ -9,7 +9,7 @@ def setup_logging():
         "formatters": {
             "default": {
                 # "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
-                "format": "%(name)s | %(message)s"
+                "format": "%(name)-10s | %(message)s"
             }
         },
         "handlers": {
@@ -23,22 +23,25 @@ def setup_logging():
     })
 
 
-def print_app_env(app:Flask):
-    app.logger.info(f'FLASK_SQLALCHEMY_DATABASE_URI = {app.config.get('FLASK_SQLALCHEMY_DATABASE_URI')}')
-    app.logger.info(f'SQLALCHEMY_DATABASE_URI = {app.config.get('SQLALCHEMY_DATABASE_URI')}')
-
-    app.logger.info(f'FLASK_PYTHONUNBUFFERD = {app.config.get('FLASK_PYTHONUNBUFFERD')}')
-    app.logger.info(f'PYTHONUNBUFFERD = {app.config.get('PYTHONUNBUFFERD')}')
+def print_app_env(app:Flask, *names:str):
+    for name in names:
+        app.logger.info(f'{name} = {app.config.get(name)}')
 
 
 def create_app():
     setup_logging()
 
     app = Flask(__name__)
-    app.config.from_prefixed_env()
-
     app.logger.info('create_app')
-    print_app_env(app)
+
+    app.config.from_prefixed_env()
+    print_app_env(
+        app,
+        'FLASK_SQLALCHEMY_DATABASE_URI',
+        'SQLALCHEMY_DATABASE_URI',
+        'FLASK_PYTHONUNBUFFERD',
+        'PYTHONUNBUFFERD',
+    )
 
     db.init_app(app)
     with app.app_context():

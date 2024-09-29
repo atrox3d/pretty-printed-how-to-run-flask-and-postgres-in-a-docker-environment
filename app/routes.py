@@ -9,14 +9,15 @@ main = Blueprint("main", __name__)
 # @main.route("/", methods=["GET", "POST"])
 @main.post("/")
 def create_todo():
-    current_app.logger.info('create--------------------')
-    db.session.add(Todo(task=request.form["task"]))
+    todo = Todo(task=request.form["task"])
+    current_app.logger.info(f'create {todo=}')
+    db.session.add(todo)
     db.session.commit()
     
     return redirect(url_for("main.get_todos"))
 
 @main.get("/")
 def get_todos():
-    current_app.logger.info('get--------------------')
+    current_app.logger.info(f'get todos')
     todos = Todo.query.all()
     return render_template("index.html", todos=todos)
