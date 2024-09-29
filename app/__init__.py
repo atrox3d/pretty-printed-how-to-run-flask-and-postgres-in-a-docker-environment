@@ -1,7 +1,7 @@
 from flask import Flask 
 import logging
-from logging.config import dictConfig
-
+# from logging.config import dictConfig
+import logging.config
 from app.extensions import db
 from app.routes import main
 
@@ -9,25 +9,23 @@ from app.routes import main
 # logging.basicConfig(level=logging.INFO)
 
 def setup_logging():
-    dictConfig(
-        {
-            "version": 1,
-            "formatters": {
-                "default": {
-                    # "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
-                    "format": "%(name)s | %(message)s"
-                }
-            },
-            "handlers": {
-                "console": {
-                    "class": "logging.StreamHandler",
-                    "stream": "ext://sys.stdout",
-                    "formatter": "default",
-                }
-            },
-            "root": {"level": "DEBUG", "handlers": ["console"]},
-        }
-    )
+    logging.config.dictConfig({
+        "version": 1,
+        "formatters": {
+            "default": {
+                # "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
+                "format": "%(name)s | %(message)s"
+            }
+        },
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "stream": "ext://sys.stdout",
+                "formatter": "default",
+            }
+        },
+        "root": {"level": "DEBUG", "handlers": ["console"]},
+    })
 
 
 def print_app_env(app:Flask):
@@ -40,7 +38,7 @@ def print_app_env(app:Flask):
 
 def create_app():
     setup_logging()
-    
+
     app = Flask(__name__)
     app.config.from_prefixed_env()
 
