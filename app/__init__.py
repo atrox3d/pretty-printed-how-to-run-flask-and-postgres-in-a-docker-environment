@@ -1,25 +1,50 @@
 from flask import Flask 
 import logging
+from logging.config import dictConfig
 
 from app.extensions import db
 from app.routes import main
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+# logger = logging.getLogger(__name__)
+# logging.basicConfig(level=logging.INFO)
+
+def setup_logging():
+    dictConfig(
+        {
+            "version": 1,
+            "formatters": {
+                "default": {
+                    # "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
+                    "format": "%(name)s | %(message)s"
+                }
+            },
+            "handlers": {
+                "console": {
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://sys.stdout",
+                    "formatter": "default",
+                }
+            },
+            "root": {"level": "DEBUG", "handlers": ["console"]},
+        }
+    )
+
 
 def print_app_env(app:Flask):
-    logger.info(f'FLASK_SQLALCHEMY_DATABASE_URI = {app.config.get('FLASK_SQLALCHEMY_DATABASE_URI')}')
-    logger.info(f'SQLALCHEMY_DATABASE_URI = {app.config.get('SQLALCHEMY_DATABASE_URI')}')
+    app.logger.info(f'FLASK_SQLALCHEMY_DATABASE_URI = {app.config.get('FLASK_SQLALCHEMY_DATABASE_URI')}')
+    app.logger.info(f'SQLALCHEMY_DATABASE_URI = {app.config.get('SQLALCHEMY_DATABASE_URI')}')
 
-    logger.info(f'FLASK_PYTHONUNBUFFERD = {app.config.get('FLASK_PYTHONUNBUFFERD')}')
-    logger.info(f'PYTHONUNBUFFERD = {app.config.get('PYTHONUNBUFFERD')}')
+    app.logger.info(f'FLASK_PYTHONUNBUFFERD = {app.config.get('FLASK_PYTHONUNBUFFERD')}')
+    app.logger.info(f'PYTHONUNBUFFERD = {app.config.get('PYTHONUNBUFFERD')}')
 
 
 def create_app():
-    logger.info('create_app')
-
+    setup_logging()
+    
     app = Flask(__name__)
     app.config.from_prefixed_env()
+
+    app.logger.info('create_app')
     print_app_env(app)
 
     db.init_app(app)
