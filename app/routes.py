@@ -20,6 +20,6 @@ def create_todo():
 @main.get("/")
 def get_todos():
     current_app.logger.info(f'get todos')
-    
+
     todos = Todo.query.all()
     return render_template("index.html", todos=todos)
