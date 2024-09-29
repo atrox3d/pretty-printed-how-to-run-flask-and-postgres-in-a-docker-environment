@@ -19,10 +19,14 @@ def create_app():
         'PYTHONUNBUFFERD',
     )
 
+    app.logger.info('init SQLAlchemy app')
     db.init_app(app)
+
+    app.logger.info('create tables')
     with app.app_context():
         db.create_all()
 
+    app.logger.info('register blueprint')
     app.register_blueprint(main)
 
     return app

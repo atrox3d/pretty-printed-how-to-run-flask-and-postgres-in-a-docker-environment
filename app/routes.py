@@ -11,6 +11,7 @@ main = Blueprint("main", __name__)
 def create_todo():
     todo = Todo(task=request.form["task"])
     current_app.logger.info(f'create {todo=}')
+
     db.session.add(todo)
     db.session.commit()
     
@@ -19,5 +20,6 @@ def create_todo():
 @main.get("/")
 def get_todos():
     current_app.logger.info(f'get todos')
+    
     todos = Todo.query.all()
     return render_template("index.html", todos=todos)
