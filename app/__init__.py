@@ -1,12 +1,7 @@
 from flask import Flask 
-import logging
-# from logging.config import dictConfig
 import logging.config
 from app.extensions import db
 from app.routes import main
-
-# logger = logging.getLogger(__name__)
-# logging.basicConfig(level=logging.INFO)
 
 def setup_logging():
     logging.config.dictConfig({
